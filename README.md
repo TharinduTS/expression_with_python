@@ -183,6 +183,25 @@ sample_metadata = ds.dataset(infile, filesystem=fs, format="parquet").to_table()
 print(sample_metadata.shape)
 sample_metadata.head()
 ```
+now filter rows without proper cell line names
+```
+import pandas as pd
+
+# Define the unwanted values
+bad_values = ["not applicable", "not specified", "not_applicable"]
+
+# Normalize to lowercase for consistent matching
+sample_metadata["cell_line_norm"] = sample_metadata["cell_line"].str.strip().str.lower()
+
+# Keep only rows that are NOT in bad_values
+filtered_metadata = sample_metadata[~sample_metadata["cell_line_norm"].isin(bad_values)]
+
+# Drop rows where cell_line is missing/null
+filtered_metadata = filtered_metadata.dropna(subset=["cell_line"])
+
+# Check result
+print(filtered_metadata.head())
+```
 
 
 
