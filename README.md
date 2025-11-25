@@ -97,6 +97,40 @@ h5ad_files = [f for f in files if f.endswith(".h5ad")]
 print("Number of .h5ad files:", len(h5ad_files))
 print("First 10 files:", h5ad_files[:10])
 ```
+# opening metadata files for cell types (inside python)
+
+install packages that are not already installed like following
+```
+pip install --user scanpy
+pip install pyarrow
+```
+and load arrow and then python
+```
+module load gcc arrow
+
+module load python
+
+python -m venv ~/envs/scanpy
+source ~/envs/scanpy/bin/activate
+```
+Then open python and set environment
+```
+import os
+import pandas as pd
+import scanpy as sc
+import pyarrow.dataset as ds
+import gcsfs
+
+# initialize GCS file system for reading data from GCS
+fs = gcsfs.GCSFileSystem()
+
+# GCS bucket path
+gcs_base_path = "gs://arc-scbasecount/2025-02-25/"
+
+# STARsolo feature type
+feature_type = "GeneFull_Ex50pAS"
+```
+
 
 
 
