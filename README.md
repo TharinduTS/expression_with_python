@@ -12,7 +12,7 @@ pip install --upgrade pip
 
 pip install fsspec
 ```
-then python script
+checking file structure of h5ad files
 ( I am still trying this inside python)
 ```stream_test.py
 import fsspec, scanpy as sc
