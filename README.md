@@ -129,6 +129,59 @@ gcs_base_path = "gs://arc-scbasecount/2025-02-25/"
 
 # STARsolo feature type
 feature_type = "GeneFull_Ex50pAS"
+
+# helper function to list files 
+def get_file_table(gcs_base_path: str, target: str=None, endswith: str=None):
+    files = fs.glob("/".join([gcs_base_path.rstrip("/"), "**"]))
+    if target:
+        files = [f for f in files if os.path.basename(f) == target]
+    else:
+        files = [f for f in files if f.endswith(endswith)]
+    file_list = []
+    for f in files:
+        file_list.append(f.split("/")[-2:-1] + [f])
+    return pd.DataFrame(file_list, columns=["organism", "file_path"])
+
+# set the path to the metadata files
+gcs_path = "/".join([gcs_base_path.rstrip("/"), "metadata", feature_type])
+gcs_path
+
+```
+Then you can list per-sample metadata filess by
+```
+# list files
+sample_pq_files = get_file_table(gcs_path, "sample_metadata.parquet")
+print(sample_pq_files.shape)
+sample_pq_files.head()
+```
+List per-obs metadata files
+```
+# list files
+obs_pq_files = get_file_table(gcs_path, "obs_metadata.parquet")
+print(obs_pq_files.shape)
+obs_pq_files.head()
+```
+h5ad files
+```
+# set the path
+gcs_path = "/".join([gcs_base_path.rstrip("/"), "h5ad", feature_type])
+gcs_path
+
+# list files
+h5ad_files = get_file_table(gcs_path, endswith=".h5ad")
+print(h5ad_files.shape)
+h5ad_files.head()
+```
+# ** Just human samples
+```
+# get the per-sample metadata file path
+infile = sample_pq_files[sample_pq_files["organism"] == "Homo_sapiens"]["file_path"].values[0]
+infile
+
+# load the metadata
+sample_metadata = ds.dataset(infile, filesystem=fs, format="parquet").to_table().to_pandas()
+print(sample_metadata.shape)
+sample_metadata.head()
 ```
 
 
