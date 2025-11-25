@@ -187,20 +187,39 @@ now filter rows without proper cell line names
 ```
 import pandas as pd
 
-# Define the unwanted values
-bad_values = ["not applicable", "not specified", "not_applicable"]
-
 # Normalize to lowercase for consistent matching
 sample_metadata["cell_line_norm"] = sample_metadata["cell_line"].str.strip().str.lower()
 
-# Keep only rows that are NOT in bad_values
-filtered_metadata = sample_metadata[~sample_metadata["cell_line_norm"].isin(bad_values)]
+# Explicit bad values list (from earlier)
+bad_values = [
+    "unsure",
+    "all cells",
+    "other",
+    "single cells sorted into categories"
+]
 
-# Drop rows where cell_line is missing/null
-filtered_metadata = filtered_metadata.dropna(subset=["cell_line"])
+# Build a boolean mask for bad values:
+mask_bad = (
+    sample_metadata["cell_line_norm"].str.contains("not") |       # anything with "not"
+    sample_metadata["cell_line_norm"].str.contains("inferred") |  # anything with "inferred"
+    sample_metadata["cell_line_norm"].str.contains("mixed") |     # anything with "mixed"
+    sample_metadata["cell_line_norm"].isin(bad_values)            # explicit bad values
+)
 
-# Check result
-print(filtered_metadata.head())
+# Keep only rows that are NOT bad
+filtered_metadata = sample_metadata[~mask_bad].dropna(subset=["cell_line"])
+
+# Show the unique remaining names
+print(filtered_metadata["cell_line_norm"].unique())
+
+
+```
+export the file to check
+```
+# Export unique remaining names to a text file, one per line
+pd.Series(filtered_metadata["cell_line_norm"].unique()).to_csv(
+    "remaining_cell_lines.txt", index=False, header=False
+)
 ```
 
 
