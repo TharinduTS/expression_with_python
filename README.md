@@ -7,8 +7,9 @@ module load python
 python -m venv ~/envs/scanpy
 source ~/envs/scanpy/bin/activate
 
-python -m ensurepip --upgrade
-pip install --upgrade pip
+# if needed 
+#python -m ensurepip --upgrade
+#pip install --upgrade pip
 
 pip install fsspec
 ```
