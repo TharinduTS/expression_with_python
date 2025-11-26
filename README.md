@@ -221,7 +221,22 @@ pd.Series(filtered_metadata["cell_line_norm"].unique()).to_csv(
     "remaining_cell_lines.txt", index=False, header=False
 )
 ```
+example Check for a row for a specific SRX number
+```
+import pandas as pd
 
+# Example SRX number you want to look for
+target_srx = "SRX27477190"
+
+# Filter rows where srx_accession matches the target
+row = filtered_metadata[filtered_metadata["srx_accession"] == target_srx]
+
+# Display the result
+if row.empty:
+    print(f"No rows found for {target_srx}")
+else:
+    print(row)
+```
 
 
 
