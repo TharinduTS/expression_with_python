@@ -11,7 +11,7 @@ source ~/envs/scanpy/bin/activate
 #python -m ensurepip --upgrade
 #pip install --upgrade pip
 
-pip install fsspec
+#pip install fsspec
 ```
 checking file structure of h5ad files
 ( I am still trying this inside python)
